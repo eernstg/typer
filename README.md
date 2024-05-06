@@ -168,13 +168,34 @@ void main() {
   print('Type of `xs`: ${xs.runtimeType}'); // `List<int>` or `Null`.
 
   print('Promoting with `orElse` fallback:');
-  int c = typeHelper.promotingOrElse(n, <X extends Child>(X promotedN) {
+  int c = typeHelper.promotingOrElse(n, <X extends num>(X promotedN) {
       print('  The promotion to `typeChild` succeeded!');
-      print('  Can do `Child` specific things: ${promotedN.childThing}');
-      return promotedN;
+      return promotedN as int;
     },
     orElse: () => 14,
   );
   print('c: $c'); // '2' or '14'.
 }
 ```
+
+We cannot use `is` or `as` directly to obtain a promotion because we cannot
+test directly against the underlying type `T` of a given
+`TypeHelper<T>`. We can call `isA` or `asA`, but those methods do not give
+rise to promotion of their receiver because the type system does not know
+that `isA` actually returns `true` or `false` in exactly the same way as
+`is` does, and `asA` will throw in exactly the same manner as `as`, albeit
+based on the type `T` rather than on a type which can be denoted locally.
+
+However, we can pass a generic callback which will receive the underlying
+type `T` of the `TypeHelper<T>` as its actual argument, and it will also
+receiver the object which is being type tested.
+
+In the body of that callback we can then use the promoted value, and it is
+statically known that it has a type which is a subtype of that type
+argument (in the example: we know that `promotedN is X`).
+
+In the case where `promoting` is used to return a value, we may need to
+perform a type cast on returned values (like `return promotedN as
+int`). The reason for this is that it is not known to the static analysis
+that `X` is exactly the underlying type of `typeHelper`. It is true, but we
+have to insist on it because the type checker can't see it.
