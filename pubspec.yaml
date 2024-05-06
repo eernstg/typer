@@ -4,7 +4,7 @@ version: 1.0.0
 repository: https://github.com/eernstg/type_helper
 
 environment:
-  sdk: ^3.4.0-250.0.dev
+  sdk: ^3.4.0
 
 dependencies:
 
