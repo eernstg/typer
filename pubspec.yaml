@@ -1,14 +1,12 @@
 name: type_helper
-description: A sample command-line application.
+description: TypeHelper, a more capable user-written Type
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+repository: https://github.com/eernstg/type_helper
 
 environment:
   sdk: ^3.4.0-250.0.dev
 
-# Add regular dependencies here.
 dependencies:
-  # path: ^1.8.0
 
 dev_dependencies:
   lints: ^3.0.0
