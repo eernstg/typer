@@ -12,12 +12,13 @@ void main() {
 
   test('`is` and `as`', () {
     TypeHelper<num> typeHelper = TypeHelper<int>();
-    /* These are compile-time errors, it's a stupid question:
-       expect(2.isA(typeHelper), isTrue);
-       expect(1.5.isA(typeHelper), isFalse);
-       expect(2.asA(typeHelper), 2);
-       expect(() => 1.5.asA(typeHelper), throws);
-    */
+    // These are compile-time errors, it's a stupid question:
+    //   expect(2.isA(typeHelper), isTrue);
+    //   expect(1.5.isA(typeHelper), isFalse);
+    //   expect(2.asA(typeHelper), 2);
+    //   expect(() => 1.5.asA(typeHelper), throws);
+
+    // But we can forget the type of the receiver, and do it.
     expect((2 as num).isA(typeHelper), isTrue);
     expect((1.5 as num).isA(typeHelper), isFalse);
     expect((2 as num).asA(typeHelper), 2);
