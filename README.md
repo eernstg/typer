@@ -37,8 +37,8 @@ void main() {
 }
 ```
 
-Other than that, you can use an instance of `TypeHelper<T>` for any type
-`T` that you can denote, and this will do more than a `Type` can do.
+Other than that, we can use an instance of `TypeHelper<T>` for any type
+`T` that we can denote, and this will do more than a `Type` can do.
 
 In particular, `TypeHelper` has support for the relational operators
 `<`, `<=`, `>`, and `>=`. They will determine whether one `TypeHelper`
@@ -53,7 +53,7 @@ void main() {
 }
 ```
 
-If `typeHelper` is a `TypeHelper<T>` then you can test whether a given
+If `typeHelper` is a `TypeHelper<T>` then we can test whether a given
 object `o` is an instance of `T` using `o.isA(typeHelper)`, and perform a
 cast to `T` using `o.asA(typeHelper)`. Note that these tests will use the
 actual value of the type argument of `typeHelper`, not the statically known
@@ -74,9 +74,9 @@ void main() {
 ```
 
 The methods `isA`, `isNotA`, and `asA` are extension methods. They are
-based on instance members. You may wish to use the extension methods
-because they have a more conventional syntax, or you may wish (or need) to
-use the instance members, e.g., because you do not want to import the
+based on instance members. We may wish to use the extension methods
+because they have a more conventional syntax, or we may wish (or need) to
+use the instance members, e.g., because we do not want to import the
 extension, or because the call must be dynamic.
 
 ```dart
@@ -92,7 +92,7 @@ void main() {
 }
 ```
 
-You can use the getter `type` to access the underlying type as an object
+We can use the getter `type` to access the underlying type as an object
 (an instance of `Type`):
 
 ```dart
@@ -102,21 +102,53 @@ void main() {
 }
 ```
 
-You can use the method `callWith` to get access to the underlying type in a
+We can use the method `callWith` to get access to the underlying type in a
 statically safe manner (this is essentially an "existential open"
 operation):
 
 ```dart
-List<X> createList<X>(TypeHelper<X> typeHelper) {
-  
-}
+List<X> createList<X>(TypeHelper<X> typeHelper) =>
+    typeHelper.callWith(<Y>() => <Y>[] as List<X>);
 
 void main() {
   // Again, we do not have perfect knowledge about the type.
   TypeHelper<num> typeHelper = TypeHelper<int>();
-  
-  List<num> xs = typeHelper.callWith(<X>() => <X>[]);
+
+  List<num> xs = createList(typeHelper);
   print(xs is List<int>); // 'true'.
 }
 ```
 
+To see why this is a non-trivial operation, try to complete the following
+example which is doing the same thing using the built-in `Type` objects:
+
+```dart
+List<X> createList<X>(Type type) => ...; // NB!
+
+void main() {
+  Type type = int;
+
+  List<num> xs = createList(type);
+  print(xs is List<int>); // 'true'.
+}
+```
+
+Note that `X` is unconstrained, and there is no guarantee that it has any
+relationship with the given `Type` (`X` could have the value `String` and
+`type` could be a reified representation of `int`, and we wouldn't know
+there's a problem).
+
+It is actually not possible (without 'dart:mirrors') to extract any
+information from the given `type` (other than equality, say, which could be
+used to test that `type != X`, but that wouldn't be very useful). So we
+basically can't write code (again, except using mirrors) which will create
+a `List<int>` based on the fact that `type` is a reified representation of
+`int`. Using equality we can take some baby steps, but it won't scale up:
+
+```dart
+List<X> createList<X>(Type type) => switch (type) {
+    int => <int>[],
+    String => <String>[],
+    _ => throw "OK, obviously this will never happen! ;-)",
+  };
+```
