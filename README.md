@@ -152,3 +152,29 @@ List<X> createList<X>(Type type) => switch (type) {
     _ => throw "OK, obviously this will never happen! ;-)",
   };
 ```
+
+Finally we have two methods associated with promotion:
+
+```dart
+void main() {
+  TypeHelper<num> typeHelper = TypeHelper<int>();
+  num n = Random().nextBool() ? 2 : 2.5;
+
+  print('Promoting:');
+  List<num>? xs = typeHelper.promoting(n, <X extends num>(X promotedN) {
+    print('  The promotion to `typeHelper` succeeded!');
+    return <X>[promotedN];
+  });
+  print('Type of `xs`: ${xs.runtimeType}'); // `List<int>` or `Null`.
+
+  print('Promoting with `orElse` fallback:');
+  int c = typeHelper.promotingOrElse(n, <X extends Child>(X promotedN) {
+      print('  The promotion to `typeChild` succeeded!');
+      print('  Can do `Child` specific things: ${promotedN.childThing}');
+      return promotedN;
+    },
+    orElse: () => 14,
+  );
+  print('c: $c'); // '2' or '14'.
+}
+```
