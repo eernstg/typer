@@ -24,7 +24,7 @@ void main() {
     expect((2 as num).asA(typeHelper), 2);
     expect(() => (1.5 as num).asA(typeHelper), throws);
   });
-  
+
   test('Instance methods doing `is` and `as`', () {
     TypeHelper<num> typeHelper = TypeHelper<int>();
 
@@ -63,7 +63,9 @@ void main() {
   test('The method `promotingOrElse`', () {
     num p = 3;
     TypeHelper<int> typeHelper = TypeHelper();
-    int c = typeHelper.promotingOrElse(p, <X extends int>(X x) {
+    int c = typeHelper.promotingOrElse(
+      p,
+      <X extends int>(X x) {
         expect(x.isEven, isFalse);
         return x as int;
       },

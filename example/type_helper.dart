@@ -48,7 +48,9 @@ void main() {
   print('Type of `ps`: ${ps.runtimeType}'); // `List<Child>` or `Null`.
 
   print('Promoting with `orElse` fallback:');
-  Child c = typeChild.promotingOrElse(p, <X extends Child>(X promotedP) {
+  Child c = typeChild.promotingOrElse(
+    p,
+    <X extends Child>(X promotedP) {
       print('  The promotion to `typeChild` succeeded!');
       print('  Can do `Child` specific things: ${promotedP.childThing}');
       return promotedP;
