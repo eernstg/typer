@@ -29,8 +29,8 @@ extension TyperExtension<X> on Typer<X> {
       containsInstance(toPromote) ? _unsafePromote(toPromote, callback) : null;
 
   R promote<R>(Object? toPromote, R callback<Y extends X>(Y),
-      {required R orElse()}) =>
-    containsInstance(toPromote)
-    ? _unsafePromote(toPromote, callback)
-    : orElse();
+          {required R orElse()}) =>
+      containsInstance(toPromote)
+          ? _unsafePromote(toPromote, callback)
+          : orElse();
 }

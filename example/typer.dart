@@ -39,7 +39,8 @@ void main() {
   // will check that `p` has the actual type represented by `typeWhoKnows`,
   // which could be any subtype of `Parent` (in this case it is `Child`).
   print('Promoting:');
-  List<Parent>? ps = typeWhoKnows.promoteOrNull(p, <X extends Parent>(X promotedP) {
+  List<Parent>? ps =
+      typeWhoKnows.promoteOrNull(p, <X extends Parent>(X promotedP) {
     print('  The promotion to `typeWhoKnows` succeeded!');
     return <X>[promotedP];
   });
