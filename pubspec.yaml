@@ -1,7 +1,7 @@
-name: type_helper
-description: TypeHelper, a more capable user-written Type
+name: typer
+description: Typer, a more capable version of Type
 version: 1.0.0
-repository: https://github.com/eernstg/type_helper
+repository: https://github.com/eernstg/typer
 
 environment:
   sdk: ^3.3.0
