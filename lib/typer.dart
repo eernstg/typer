@@ -1,5 +1,3 @@
-
-
 class _Typer<X> {
   const _Typer();
 
@@ -26,8 +24,7 @@ extension TyperExtension<X> on X {
   bool isNotA(Typer<X> t) => !t.containsInstance(this);
 }
 
-extension type const Typer<X>._(_Typer<X> _)
-    implements _Typer<X> {
+extension type const Typer<X>._(_Typer<X> _) implements _Typer<X> {
   // This constructor should be `const`, but we need
   // https://github.com/dart-lang/language/issues/3614
   // before we can do that.
