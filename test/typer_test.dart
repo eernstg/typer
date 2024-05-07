@@ -3,15 +3,15 @@ import 'package:typer/typer.dart';
 
 void main() {
   test('Relational operators', () {
-    final t1 = TypeHelper<int>();
-    final t2 = TypeHelper<num>();
+    final t1 = Typer<int>();
+    final t2 = Typer<num>();
 
     expect(t1 <= t2, isTrue);
     expect(t2 <= t1, isFalse);
   });
 
   test('`is` and `as`', () {
-    TypeHelper<num> typeHelper = TypeHelper<int>();
+    Typer<num> typeHelper = Typer<int>();
     // These are compile-time errors, it's a stupid question:
     //   expect(2.isA(typeHelper), isTrue);
     //   expect(1.5.isA(typeHelper), isFalse);
@@ -26,7 +26,7 @@ void main() {
   });
 
   test('Instance methods doing `is` and `as`', () {
-    TypeHelper<num> typeHelper = TypeHelper<int>();
+    Typer<num> typeHelper = Typer<int>();
 
     expect(typeHelper.containsInstance(2), isTrue);
     expect(typeHelper.containsInstance(1.5), isFalse);
@@ -35,14 +35,14 @@ void main() {
   });
 
   test('The getter `type`', () {
-    TypeHelper<num> typeHelper = TypeHelper<int>();
+    Typer<num> typeHelper = Typer<int>();
     expect(typeHelper.type, int);
   });
 
   test('The method `callWith`', () {
-    TypeHelper<num> typeHelper = TypeHelper<int>();
+    Typer<num> typeHelper = Typer<int>();
 
-    List<X> createList<X>(TypeHelper<X> typeHelper) =>
+    List<X> createList<X>(Typer<X> typeHelper) =>
         typeHelper.callWith(<Y>() => <Y>[] as List<X>);
 
     List<num> xs = createList(typeHelper);
@@ -51,7 +51,7 @@ void main() {
 
   test('The method `promoting`', () {
     num p = 2;
-    TypeHelper<num> typeHelper = TypeHelper<int>();
+    Typer<num> typeHelper = Typer<int>();
     List<num>? ps = typeHelper.promoting(p, <X extends num>(X x) => <X>[x]);
     expect(ps.runtimeType, List<int>);
 
@@ -62,7 +62,7 @@ void main() {
 
   test('The method `promotingOrElse`', () {
     num p = 3;
-    TypeHelper<int> typeHelper = TypeHelper();
+    Typer<int> typeHelper = Typer();
     int c = typeHelper.promotingOrElse(
       p,
       <X extends int>(X x) {
