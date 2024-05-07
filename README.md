@@ -199,3 +199,4 @@ perform a type cast on returned values (like `return promotedN as
 int`). The reason for this is that it is not known to the static analysis
 that `X` is exactly the underlying type of `typer`. It is true, but we
 have to insist on it because the type checker can't see it.
+
