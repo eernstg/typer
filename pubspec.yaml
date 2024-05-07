@@ -1,6 +1,6 @@
 name: typer
 description: Typer, a more capable version of Type
-version: 1.0.0
+version: 1.0.1
 repository: https://github.com/eernstg/typer
 
 environment:
