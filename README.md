@@ -2,6 +2,8 @@
 
 Provide `Typer<X>`, a user-written, but more capable version of `Type`.
 
+## The built-in `Type` class
+
 The language Dart has built-in support for obtaining a reified
 representation of a given type `T` by evaluating the corresponding type
 literal as an expression:
@@ -37,8 +39,13 @@ void main() {
 }
 ```
 
-Other than that, we can use an instance of `Typer<T>` for any type
-`T` that we can denote, and this will do more than a `Type` can do.
+## Typer
+
+For all other things than getting the run-time type of an existing object,
+we can use an instance of `Typer<T>` for any type `T` that we can denote,
+and this will do more than a `Type` can do.
+
+### Comparing types
 
 In particular, `Typer` has support for the relational operators
 `<`, `<=`, `>`, and `>=`. They will determine whether one `Typer`
@@ -52,6 +59,8 @@ void main() {
   print(t2 <= t1); // 'false'.
 }
 ```
+
+### Type tests and type casts
 
 If `typer` is a `Typer<T>` then we can test whether a given
 object `o` is an instance of `T` using `o.isA(typer)`, and perform a
@@ -101,6 +110,8 @@ void main() {
   print(typer.type); // 'int'.
 }
 ```
+
+### Using the type that a `Typer` represents
 
 We can use the method `callWith` to get access to the underlying type in a
 statically safe manner (this is essentially an "existential open"
@@ -200,3 +211,99 @@ int`). The reason for this is that it is not known to the static analysis
 that `X` is exactly the underlying type of `typer`. It is true, but we
 have to insist on it because the type checker can't see it.
 
+### Example design
+
+Here is an example of a design which can be used to enable techniques that
+are similar to an existential open operation, in a rather general
+fashion. That is, it allows us to use the type arguments of a given object
+"from the outside".
+
+The basic idea is that a generic class with type parameters `X1 .. Xk`
+has a getter for each type variable `Xj`, returning a `Type<Xj>`.
+
+These getters can be used to write code that uses the actual value of each
+of the type variables of the class, which is again a feature that Dart does
+not support for client code. In fact, only code in the body of the class
+has access to the type variables because that's the only code for which
+those type variables are in scope. Outside clients only know an approximate
+value which is a supertype of the actual value, based on the statically
+known type of the given object.
+
+For instance, in the body of the `List<E>` class the type parameter `E` is
+in scope, and we can do things like `return <E>{};`. But in code outside
+the body of `List`, we may only know that the list is a `List<T>` where `T`
+could be any supertype of the actual value, e.g., we might only know that
+it is a `List<Object?>`.
+
+In this example, we use the `Typer` to create a set from a given list,
+preserving the actual type argument.
+
+The example uses two mock classes `MyList` and `MySet`, but this is only
+because we can't easily add the necessary `Typer` getters to the real
+`List` and `Set` class. Nevertheless, if such getters were added then these
+techniques could be just on real `List` and `Set` objects just like they
+are used here.
+
+This is true for any class, of course: If you want to enable this kind of
+existential opening for one of the classes you maintain then you just need
+to add those `Typer` getters, and you're done.
+
+Here is the example:
+
+```dart
+abstract class MyIterable<E> {
+  const MyIterable();
+
+  E get first;
+
+  Typer<E> get typerOfE => Typer();
+}
+
+class MyList<E> extends MyIterable<E> {
+  final E e;
+
+  const MyList(this.e);
+
+  @override
+  E get first => e;
+}
+
+class MySet<E> extends MyIterable<E> {
+  final E e;
+
+  const MySet(this.e);
+
+  @override
+  E get first => e;
+}
+
+MySet<X> iterableToSet<X>(MyIterable<X> iterable) =>
+    iterable.typerOfE.callWith(<Y>() {
+      iterable as MyIterable<Y>;
+      var first = iterable.first as Y;
+      return MySet<Y>(first) as MySet<X>;
+    });
+
+void main() {
+  // Assume that we do not know the precise type of `iterable`.
+  MyIterable<Object?> iterable = MyList<int>(42);
+
+  // Create a set with the same element type as `iterable`.
+  var set = iterableToSet(iterable);
+  print(set.runtimeType); // 'MySet<int>'.
+}
+```
+
+This kind of code isn't particularly convenient. For example, we have to
+"manually tell the type system" that the run-time type of `iterable` is
+actually a subtype of `MyIterable<E>`. We do this by executing
+`iterable as MyIterable<Y>`.
+
+However, the point is that it is not possible to get access to the value of
+a type variable of an existing object unless we have _something_ inside the
+body of the class of that object. The `typerOfE` getter is a quite general
+tool for this purpose.
+
+This means that you can do things that you otherwise can't do. We'd use
+well-known abstraction techniques to make it look nice, e.g., by writing a
+reusable function like `iterableToSet`.
