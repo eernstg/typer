@@ -27,11 +27,13 @@ void main() {
   print('p is typeChild: ${p.isA(typeChild)}'); // 'true' or 'false'.
 
   // Create a `Typer` for a `List` type whose type argument is `typeChild`.
-  var typeListOfChild = typeChild.callWith<Typer<List<Object?>>>(<X>() => Typer<List<X>>());
+  var typeListOfChild =
+      typeChild.callWith<Typer<List<Object?>>>(<X>() => Typer<List<X>>());
   print(typeListOfChild.type); // `List<Child>`.
 
   // Create a `List` whose type argument is `typeChild`, containing `p` if OK.
-  var listOfChild = typeChild.callWith<List<Object?>>(<X>() => listOfMaybe<X>(p));
+  var listOfChild =
+      typeChild.callWith<List<Object?>>(<X>() => listOfMaybe<X>(p));
   print('listOfChild: $listOfChild, of type: ${listOfChild.runtimeType}');
 
   // Promote to the type of a `Typer`. Note that we are using the
