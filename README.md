@@ -51,7 +51,7 @@ In particular, `Typer` has support for the relational operators
 `<`, `<=`, `>`, and `>=`. They will determine whether one `Typer`
 represents a type which is a subtype/supertype of another:
 
-```dartdart
+```dart
 void main() {
   const t1 = Typer<int>();
   const t2 = Typer<num>();
