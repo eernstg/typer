@@ -14,13 +14,11 @@ List<X> listOfMaybe<X>(Object? perhapsInclude) =>
 
 Typer<List<X>> listTyper<X>() => Typer<List<X>>();
 
-const typeInt = TyperConstant<int>();
-
 void main() {
   Parent p = Random().nextBool() ? Child() : OtherChild();
-  final typeParent = Typer<Parent>();
-  final typeChild = Typer<Child>();
-  final typeWhoKnows = typeChild as Typer<Parent>;
+  const typeParent = Typer<Parent>();
+  const typeChild = Typer<Child>();
+  const typeWhoKnows = typeChild as Typer<Parent>;
 
   print('typeChild <: typeParent: ${typeChild <= typeParent}'); // 'true'.
   print('typeParent <: typeChild: ${typeParent <= typeChild}'); // 'false'.
