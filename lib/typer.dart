@@ -25,11 +25,11 @@ extension UseTyperExtension<X> on X {
 }
 
 extension TyperExtension<X> on Typer<X> {
-  R? promoteOrNull<R>(Object? toPromote, R callback<Y extends X>(Y y)) =>
+  R? promoteOrNull<R>(Object? toPromote, R Function<Y extends X>(Y) callback) =>
       containsInstance(toPromote) ? _unsafePromote(toPromote, callback) : null;
 
-  R promote<R>(Object? toPromote, R callback<Y extends X>(Y y),
-          {required R orElse()}) =>
+  R promote<R>(Object? toPromote, R Function<Y extends X>(Y) callback,
+          {required R Function() orElse,}) =>
       containsInstance(toPromote)
           ? _unsafePromote(toPromote, callback)
           : orElse();

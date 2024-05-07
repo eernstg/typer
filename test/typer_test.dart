@@ -1,6 +1,8 @@
 import 'package:test/test.dart';
 import 'package:typer/typer.dart';
 
+final throws = throwsA(isA<TypeError>());
+
 void main() {
   test('Relational operators', () {
     final t1 = Typer<int>();
