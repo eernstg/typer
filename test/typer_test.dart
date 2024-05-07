@@ -52,7 +52,7 @@ void main() {
   test('The method `promoteOrNull`', () {
     num p = 2;
     Typer<num> typeHelper = Typer<int>();
-    List<num>? ps = typeHelper.promoteOrNull(p, <X extends num>(X x) => <X>[x]);
+    List<num>? ps = typeHelper.promoteOrNull(p, <X extends num>(X x) => <X>[x] as List<num>);
     expect(ps.runtimeType, List<int>);
 
     p = 2.5;
