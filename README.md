@@ -238,11 +238,11 @@ it is a `List<Object?>`.
 In this example, we use the `Typer` to create a set from a given list,
 preserving the actual type argument.
 
-The example uses two mock classes `MyList` and `MySet`, but this is only
-because we can't easily add the necessary `Typer` getters to the real
-`List` and `Set` class. Nevertheless, if such getters were added then these
-techniques could be just on real `List` and `Set` objects just like they
-are used here.
+The example uses mock classes `MyIterable`, `MyList`, and `MySet`, but this
+is only because we can't easily add the necessary `Typer` getters to the
+real `List` and `Set` classes. Nevertheless, if such getters were added
+then these techniques could be just on real `List` and `Set` objects, just
+like they are used here.
 
 This is true for any class, of course: If you want to enable this kind of
 existential opening for one of the classes you maintain then you just need
@@ -279,31 +279,37 @@ class MySet<E> extends MyIterable<E> {
 
 MySet<X> iterableToSet<X>(MyIterable<X> iterable) =>
     iterable.typerOfE.callWith(<Y>() {
-      iterable as MyIterable<Y>;
-      var first = iterable.first as Y;
-      return MySet<Y>(first) as MySet<X>;
+      return MySet<Y>(iterable.first as Y) as MySet<X>;
     });
 
 void main() {
   // Assume that we do not know the precise type of `iterable`.
   MyIterable<Object?> iterable = MyList<int>(42);
 
-  // Create a set with the same element type as `iterable`.
+  // Now we want to create a set with the same element type.
   var set = iterableToSet(iterable);
   print(set.runtimeType); // 'MySet<int>'.
 }
 ```
 
 This kind of code isn't particularly convenient. For example, we have to
-"manually tell the type system" that the run-time type of `iterable` is
-actually a subtype of `MyIterable<E>`. We do this by executing
-`iterable as MyIterable<Y>`.
+"manually tell the type system" that `iterable.first` has the type `Y`.
 
-However, the point is that it is not possible to get access to the value of
-a type variable of an existing object unless we have _something_ inside the
-body of the class of that object. The `typerOfE` getter is a quite general
-tool for this purpose.
+This is indeed true because `Y` will be the actual type argument of
+`iterable`, but the type system cannot make that connection. (It would
+take a full-fledged language mechanism to be able to know this in the type
+system.) Still, the fact that `Y` is guaranteed to be the actual type
+argument of `iterable` allows us to write type casts that are guaranteed to
+succeed. And the point is that we can now _use_ that actual type argument
+because it's available as `Y` in the body of the function literal.
 
-This means that you can do things that you otherwise can't do. We'd use
-well-known abstraction techniques to make it look nice, e.g., by writing a
-reusable function like `iterableToSet`.
+The crucial insight is that it is not possible to get access to the value
+of a type variable of an existing object unless we have _something_ inside
+the body of the class of that object. The `typerOfE` getter is a quite
+general tool for this purpose.
+
+This means that you can do things that you otherwise can't do. 
+
+To handle the inconvenience, we'd use well-known abstraction techniques to
+make it look nice, e.g., by writing a reusable function like
+`iterableToSet`.
