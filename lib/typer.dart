@@ -1,10 +1,12 @@
-class _TypeHelper<X> {
-  const _TypeHelper();
 
-  bool operator >=(_TypeHelper other) => other is _TypeHelper<X>;
-  bool operator <=(_TypeHelper other) => other >= this;
-  bool operator >(_TypeHelper other) => this >= other && !(other >= this);
-  bool operator <(_TypeHelper other) => other >= this && !(this >= other);
+
+class _Typer<X> {
+  const _Typer();
+
+  bool operator >=(_Typer other) => other is _Typer<X>;
+  bool operator <=(_Typer other) => other >= this;
+  bool operator >(_Typer other) => this >= other && !(other >= this);
+  bool operator <(_Typer other) => other >= this && !(this >= other);
 
   R callWith<R>(R Function<Y>() callback) => callback<X>();
 
@@ -18,18 +20,18 @@ class _TypeHelper<X> {
       callback<X>(instance as X);
 }
 
-extension TypeHelperExtension<X> on X {
-  X asA(TypeHelper<X> t) => t.cast(this);
-  bool isA(TypeHelper<X> t) => t.containsInstance(this);
-  bool isNotA(TypeHelper<X> t) => !t.containsInstance(this);
+extension TyperExtension<X> on X {
+  X asA(Typer<X> t) => t.cast(this);
+  bool isA(Typer<X> t) => t.containsInstance(this);
+  bool isNotA(Typer<X> t) => !t.containsInstance(this);
 }
 
-extension type const TypeHelper<X>._(_TypeHelper<X> _)
-    implements _TypeHelper<X> {
+extension type const Typer<X>._(_Typer<X> _)
+    implements _Typer<X> {
   // This constructor should be `const`, but we need
   // https://github.com/dart-lang/language/issues/3614
   // before we can do that.
-  TypeHelper() : this._(_TypeHelper<X>());
+  Typer() : this._(_Typer<X>());
 
   R? promoting<R>(Object? toPromote, R Function<Y extends X>(Y) callback) =>
       containsInstance(toPromote) ? _unsafePromote(toPromote, callback) : null;
@@ -44,12 +46,12 @@ extension type const TypeHelper<X>._(_TypeHelper<X> _)
   }
 }
 
-class TypeHelperConstant<X> extends _TypeHelper<X> {
-  const TypeHelperConstant();
-  TypeHelper<X> get asTypeHelper => TypeHelper._(this);
+class TyperConstant<X> extends _Typer<X> {
+  const TyperConstant();
+  Typer<X> get asTyper => Typer._(this);
 }
 
-extension TypeHelperConstantExtension<X> on TypeHelperConstant<X> {
+extension TyperConstantExtension<X> on TyperConstant<X> {
   R? promoting<R>(Object? toPromote, R Function<Y extends X>(Y) callback) =>
       containsInstance(toPromote) ? _unsafePromote(toPromote, callback) : null;
 

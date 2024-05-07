@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:type_helper/type_helper.dart';
+import 'package:typer/typer.dart';
 
 class Parent {}
 
@@ -12,15 +12,15 @@ class OtherChild implements Parent {}
 List<X> listOfMaybe<X>(Object? perhapsInclude) =>
     perhapsInclude is X ? <X>[perhapsInclude] : <X>[];
 
-TypeHelper<List<X>> listTypeHelper<X>() => TypeHelper<List<X>>();
+Typer<List<X>> listTyper<X>() => Typer<List<X>>();
 
-const typeInt = TypeHelperConstant<int>();
+const typeInt = TyperConstant<int>();
 
 void main() {
   Parent p = Random().nextBool() ? Child() : OtherChild();
-  final typeParent = TypeHelper<Parent>();
-  final typeChild = TypeHelper<Child>();
-  final typeWhoKnows = typeChild as TypeHelper<Parent>;
+  final typeParent = Typer<Parent>();
+  final typeChild = Typer<Child>();
+  final typeWhoKnows = typeChild as Typer<Parent>;
 
   print('typeChild <: typeParent: ${typeChild <= typeParent}'); // 'true'.
   print('typeParent <: typeChild: ${typeParent <= typeChild}'); // 'false'.
@@ -28,15 +28,15 @@ void main() {
   print('p is typeParent: ${p.isA(typeParent)}'); // 'true'.
   print('p is typeChild: ${p.isA(typeChild)}'); // 'true' or 'false'.
 
-  // Create a `TypeHelper` for a `List` type whose type argument is `typeChild`.
-  var typeListOfChild = typeChild.callWith(<X>() => TypeHelper<List<X>>());
+  // Create a `Typer` for a `List` type whose type argument is `typeChild`.
+  var typeListOfChild = typeChild.callWith(<X>() => Typer<List<X>>());
   print(typeListOfChild.type); // `List<Child>`.
 
   // Create a `List` whose type argument is `typeChild`, containing `p` if OK.
   var listOfChild = typeChild.callWith(<X>() => listOfMaybe<X>(p));
   print('listOfChild: $listOfChild, of type: ${listOfChild.runtimeType}');
 
-  // Promote to the type of a `TypeHelper`. Note that we are using the
+  // Promote to the type of a `Typer`. Note that we are using the
   // statically known bound `Parent` of `typeWhoKnows`, but the promotion
   // will check that `p` has the actual type represented by `typeWhoKnows`,
   // which could be any subtype of `Parent` (in this case it is `Child`).

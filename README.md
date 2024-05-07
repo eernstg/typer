@@ -1,6 +1,6 @@
-# type_helper
+# typer
 
-Provide `TypeHelper<X>`, a more capable version of `Type`.
+Provide `Typer<X>`, a user-written, but more capable version of `Type`.
 
 The language Dart has built-in support for obtaining a reified
 representation of a given type `T` by evaluating the corresponding type
@@ -37,39 +37,39 @@ void main() {
 }
 ```
 
-Other than that, we can use an instance of `TypeHelper<T>` for any type
+Other than that, we can use an instance of `Typer<T>` for any type
 `T` that we can denote, and this will do more than a `Type` can do.
 
-In particular, `TypeHelper` has support for the relational operators
-`<`, `<=`, `>`, and `>=`. They will determine whether one `TypeHelper`
+In particular, `Typer` has support for the relational operators
+`<`, `<=`, `>`, and `>=`. They will determine whether one `Typer`
 represents a type which is a subtype/supertype of another:
 
 ```dartdart
 void main() {
-  const t1 = TypeHelper<int>();
-  const t2 = TypeHelper<num>();
+  const t1 = Typer<int>();
+  const t2 = Typer<num>();
   print(t1 <= t2); // 'true'.
   print(t2 <= t1); // 'false'.
 }
 ```
 
-If `typeHelper` is a `TypeHelper<T>` then we can test whether a given
-object `o` is an instance of `T` using `o.isA(typeHelper)`, and perform a
-cast to `T` using `o.asA(typeHelper)`. Note that these tests will use the
-actual value of the type argument of `typeHelper`, not the statically known
+If `typer` is a `Typer<T>` then we can test whether a given
+object `o` is an instance of `T` using `o.isA(typer)`, and perform a
+cast to `T` using `o.asA(typer)`. Note that these tests will use the
+actual value of the type argument of `typer`, not the statically known
 type argument (which could be any supertype of the actual one).
 
 ```dart
 void main() {
-  // Somehow, we've forgotten that `typeHelper` represents `int`,
+  // Somehow, we've forgotten that `typer` represents `int`,
   // we just remember that it is some subtype of `num`.
-  TypeHelper<num> typeHelper = TypeHelper<int>();
+  Typer<num> typer = Typer<int>();
   
   // But the `isA` (and `asA`) methods will use the actual type.
-  print(2.isA(typeHelper)); // 'true'.
-  print(1.5.isA(typeHelper)); // 'false'.
-  2.asA(typeHelper); // OK.
-  1.5.asA(typeHelper); // Throws.
+  print(2.isA(typer)); // 'true'.
+  print(1.5.isA(typer)); // 'false'.
+  2.asA(typer); // OK.
+  1.5.asA(typer); // Throws.
 }
 ```
 
@@ -83,12 +83,12 @@ extension, or because the call must be dynamic.
 // Same thing as previous example, using instance members.
 
 void main() {
-  TypeHelper<num> typeHelper = TypeHelper<int>();
+  Typer<num> typer = Typer<int>();
 
-  print(typeHelper.containsInstance(2)); // 'true'.
-  print(typeHelper.containsInstance(1.5)); // 'false'.
-  typeHelper.cast(2); // OK.
-  typeHelper.cast(1.5); // Throws.
+  print(typer.containsInstance(2)); // 'true'.
+  print(typer.containsInstance(1.5)); // 'false'.
+  typer.cast(2); // OK.
+  typer.cast(1.5); // Throws.
 }
 ```
 
@@ -97,8 +97,8 @@ We can use the getter `type` to access the underlying type as an object
 
 ```dart
 void main() {
-  TypeHelper<num> typeHelper = TypeHelper<int>();
-  print(typeHelper.type); // 'int'.
+  Typer<num> typer = Typer<int>();
+  print(typer.type); // 'int'.
 }
 ```
 
@@ -107,14 +107,14 @@ statically safe manner (this is essentially an "existential open"
 operation):
 
 ```dart
-List<X> createList<X>(TypeHelper<X> typeHelper) =>
-    typeHelper.callWith(<Y>() => <Y>[] as List<X>);
+List<X> createList<X>(Typer<X> typer) =>
+    typer.callWith(<Y>() => <Y>[] as List<X>);
 
 void main() {
   // Again, we do not have perfect knowledge about the type.
-  TypeHelper<num> typeHelper = TypeHelper<int>();
+  Typer<num> typer = Typer<int>();
 
-  List<num> xs = createList(typeHelper);
+  List<num> xs = createList(typer);
   print(xs is List<int>); // 'true'.
 }
 ```
@@ -157,18 +157,18 @@ Finally we have two methods associated with promotion:
 
 ```dart
 void main() {
-  TypeHelper<num> typeHelper = TypeHelper<int>();
+  Typer<num> typer = Typer<int>();
   num n = Random().nextBool() ? 2 : 2.5;
 
   print('Promoting:');
-  List<num>? xs = typeHelper.promoting(n, <X extends num>(X promotedN) {
-    print('  The promotion to `typeHelper` succeeded!');
+  List<num>? xs = typer.promoting(n, <X extends num>(X promotedN) {
+    print('  The promotion to `typer` succeeded!');
     return <X>[promotedN];
   });
   print('Type of `xs`: ${xs.runtimeType}'); // `List<int>` or `Null`.
 
   print('Promoting with `orElse` fallback:');
-  int c = typeHelper.promotingOrElse(n, <X extends num>(X promotedN) {
+  int c = typer.promotingOrElse(n, <X extends num>(X promotedN) {
       print('  The promotion to `typeChild` succeeded!');
       return promotedN as int;
     },
@@ -180,14 +180,14 @@ void main() {
 
 We cannot use `is` or `as` directly to obtain a promotion because we cannot
 test directly against the underlying type `T` of a given
-`TypeHelper<T>`. We can call `isA` or `asA`, but those methods do not give
+`Typer<T>`. We can call `isA` or `asA`, but those methods do not give
 rise to promotion of their receiver because the type system does not know
 that `isA` actually returns `true` or `false` in exactly the same way as
 `is` does, and `asA` will throw in exactly the same manner as `as`, albeit
 based on the type `T` rather than on a type which can be denoted locally.
 
 However, we can pass a generic callback which will receive the underlying
-type `T` of the `TypeHelper<T>` as its actual argument, and it will also
+type `T` of the `Typer<T>` as its actual argument, and it will also
 receiver the object which is being type tested.
 
 In the body of that callback we can then use the promoted value, and it is
@@ -197,5 +197,5 @@ argument (in the example: we know that `promotedN is X`).
 In the case where `promoting` is used to return a value, we may need to
 perform a type cast on returned values (like `return promotedN as
 int`). The reason for this is that it is not known to the static analysis
-that `X` is exactly the underlying type of `typeHelper`. It is true, but we
+that `X` is exactly the underlying type of `typer`. It is true, but we
 have to insist on it because the type checker can't see it.

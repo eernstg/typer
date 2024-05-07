@@ -1,5 +1,5 @@
-import 'package:type_helper/type_helper.dart';
 import 'package:test/test.dart';
+import 'package:typer/typer.dart';
 
 void main() {
   test('Relational operators', () {
