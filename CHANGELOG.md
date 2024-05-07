@@ -1,6 +1,6 @@
 ## 1.0.3
 
-- Copyright, etc.
+- Improve README.md.
 
 ## 1.0.2
 
