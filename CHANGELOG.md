@@ -1,6 +1,7 @@
 ## 1.0.3
 
-- 
+- Copyright, etc.
+
 ## 1.0.2
 
 - Formatting, cleanups.
