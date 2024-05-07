@@ -188,7 +188,7 @@ based on the type `T` rather than on a type which can be denoted locally.
 
 However, we can pass a generic callback which will receive the underlying
 type `T` of the `Typer<T>` as its actual argument, and it will also
-receiver the object which is being type tested.
+receive the object which is being type tested (`promotedN` in the example).
 
 In the body of that callback we can then use the promoted value, and it is
 statically known that it has a type which is a subtype of that type

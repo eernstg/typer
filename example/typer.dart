@@ -39,14 +39,14 @@ void main() {
   // will check that `p` has the actual type represented by `typeWhoKnows`,
   // which could be any subtype of `Parent` (in this case it is `Child`).
   print('Promoting:');
-  List<Parent>? ps = typeWhoKnows.promoting(p, <X extends Parent>(X promotedP) {
+  List<Parent>? ps = typeWhoKnows.promoteOrNull(p, <X extends Parent>(X promotedP) {
     print('  The promotion to `typeWhoKnows` succeeded!');
     return <X>[promotedP];
   });
   print('Type of `ps`: ${ps.runtimeType}'); // `List<Child>` or `Null`.
 
   print('Promoting with `orElse` fallback:');
-  Child c = typeChild.promotingOrElse(
+  Child c = typeChild.promote(
     p,
     <X extends Child>(X promotedP) {
       print('  The promotion to `typeChild` succeeded!');

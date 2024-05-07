@@ -49,21 +49,21 @@ void main() {
     expect(xs is List<int>, isTrue);
   });
 
-  test('The method `promoting`', () {
+  test('The method `promoteOrNull`', () {
     num p = 2;
     Typer<num> typeHelper = Typer<int>();
-    List<num>? ps = typeHelper.promoting(p, <X extends num>(X x) => <X>[x]);
+    List<num>? ps = typeHelper.promoteOrNull(p, <X extends num>(X x) => <X>[x]);
     expect(ps.runtimeType, List<int>);
 
     p = 2.5;
-    ps = typeHelper.promoting(p, <X extends num>(X x) => <X>[x]);
+    ps = typeHelper.promoteOrNull(p, <X extends num>(X x) => <X>[x]);
     expect(ps.runtimeType, Null);
   });
 
-  test('The method `promotingOrElse`', () {
+  test('The method `promote`', () {
     num p = 3;
     Typer<int> typeHelper = Typer();
-    int c = typeHelper.promotingOrElse(
+    int c = typeHelper.promote(
       p,
       <X extends int>(X x) {
         expect(x.isEven, isFalse);
@@ -74,7 +74,7 @@ void main() {
     expect(c, 3);
 
     p = 3.75;
-    c = typeHelper.promotingOrElse(
+    c = typeHelper.promote(
       p,
       <X extends int>(X x) => throw 'Not reached',
       orElse: () => 14,
