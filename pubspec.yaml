@@ -3,7 +3,7 @@ description: >-
   Provide `Typer`, a more capable version of `Type`.
   Supports relational operators, type tests and casts,
   a limited form of existential open, and promotion.
-version: 1.0.6
+version: 1.0.7
 repository: https://github.com/eernstg/typer
 
 environment:

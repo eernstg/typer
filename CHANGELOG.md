@@ -1,3 +1,8 @@
+## 1.0.7
+
+- Define `toString`.
+- Improve README.md.
+
 ## 1.0.6
 
 - Add overriding `==` and `hashCode` to align equality with
