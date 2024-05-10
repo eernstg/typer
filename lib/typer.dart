@@ -65,7 +65,7 @@ class Typer<X> {
   static int _typerHashCode = Typer<Object?>.hashCode;
 
   @override
-  int get hashCode => X.hashCode, ^ _typerHashCode;
+  int get hashCode => X.hashCode ^ _typerHashCode;
 }
 
 /// Provide familiar access to some members of `Typer`.
