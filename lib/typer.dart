@@ -55,6 +55,17 @@ class Typer<X> {
 
   R? _unsafePromote<R>(Object? instance, Function callback) =>
       callback<X>(instance as X);
+
+  @override
+  bool operator ==(other) {
+    if (other is! Typer) return false;
+    return this <= other && other <= this;
+  }
+
+  static int _typerHashCode = Typer<Object?>.hashCode;
+
+  @override
+  int get hashCode => X.hashCode, ^ _typerHashCode;
 }
 
 /// Provide familiar access to some members of `Typer`.

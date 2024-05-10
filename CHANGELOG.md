@@ -1,3 +1,8 @@
+## 1.0.6
+
+- Add overriding `==` and `hashCode` to align equality with
+  the relational operators.
+
 ## 1.0.5
 
 - Improve the documentation.
