@@ -160,7 +160,7 @@ a `List<int>` based on the fact that `type` is a reified representation of
 List<X> createList<X>(Type type) => switch (type) {
     int => <int>[],
     String => <String>[],
-    _ => throw "OK, obviously this will never happen! ;-)",
+    _ => throw "Surely we don't need more cases! ;-)",
   };
 ```
 
@@ -242,15 +242,19 @@ it is a `List<Object?>`.
 In this example, we use the `Typer` to create a set from a given list,
 preserving the actual type argument.
 
-The example uses mock classes `MyIterable`, `MyList`, and `MySet`, but this
-is only because we can't easily add the necessary `Typer` getters to the
-real `List` and `Set` classes. Nevertheless, if such getters were added
-then these techniques could be just on real `List` and `Set` objects, just
-like they are used here.
+This is a non-trivial feat, as you may know from experience if you have
+tried to create a new object with the same type arguments as an existing
+object, or anything of a similar nature.
+
+The example uses mock classes `MyIterable`, `MyList`, and `MySet`. This is
+just because we can't easily add the necessary `Typer` getters to the real
+`List` and `Set` classes. Nevertheless, if such getters were added then
+these techniques could be used on real `List` and `Set` objects, just like
+they are used here.
 
 This is true for any class, of course: If you want to enable this kind of
 existential opening for one of the classes you maintain then you just need
-to add those `Typer` getters, and you're done.
+to add those `Typer` getters, and then you can use these techniques.
 
 Here is the example:
 
@@ -297,14 +301,15 @@ void main() {
 ```
 
 This kind of code isn't particularly convenient. For example, we have to
-"manually tell the type system" that `iterable.first` has the type `Y`.
+"manually" tell the type system that `iterable.first` has the type `Y`, by
+means of a type cast.
 
-This is indeed true because `Y` will be the actual type argument of
-`iterable`, but the type system cannot make that connection. (It would
+This cast is safe because `Y` will be the actual type argument of
+`iterable`. However, the type system cannot make that connection. (It would
 take a full-fledged language mechanism to be able to know this in the type
 system.) Still, the fact that `Y` is guaranteed to be the actual type
 argument of `iterable` allows us to write type casts that are guaranteed to
-succeed. And the point is that we can now _use_ that actual type argument
+succeed. The point is that we can now _use_ that actual type argument
 because it's available as `Y` in the body of the function literal.
 
 The crucial insight is that it is not possible to get access to the value
@@ -313,7 +318,3 @@ the body of the class of that object. The `typerOfE` getter is a quite
 general tool for this purpose.
 
 This means that you can do things that you otherwise can't do. 
-
-To handle the inconvenience, we'd use well-known abstraction techniques to
-make it look nice, e.g., by writing a reusable function like
-`iterableToSet`.
