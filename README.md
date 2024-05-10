@@ -223,7 +223,7 @@ fashion. That is, it allows us to use the type arguments of a given object
 "from the outside".
 
 The basic idea is that a generic class with type parameters `X1 .. Xk`
-has a getter for each type variable `Xj`, returning a `Type<Xj>`.
+has a getter for each type variable `Xj`, returning a `Typer<Xj>`.
 
 These getters can be used to write code that uses the actual value of each
 of the type variables of the class, which is again a feature that Dart does
