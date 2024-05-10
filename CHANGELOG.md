@@ -1,3 +1,7 @@
+## 1.0.5
+
+- Improve the documentation.
+
 ## 1.0.4
 
 - Add documentation.

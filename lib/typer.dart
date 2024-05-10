@@ -2,20 +2,28 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-
-/// Reify the type parameter [X], similarly to a `Type`.
+/// Reify the type parameter [X], similarly to a [Type].
 ///
-/// For any type `T`, an instance of `Typer<T>` can be used in a way
+/// For any type `T`, an instance of [Typer<T>] can be used in a way
 /// which is similar to an instance of `Type` that was obtained as a
-/// reification of `T`, except that the `Typer` is considerably more
+/// reification of `T`, except that the [Typer] is considerably more
 /// capable.
 ///
-/// A `Typer` supports relational operators (`<=`, `<`, etc), deciding
+/// A [Typer] supports relational operators (`<=`, `<`, etc), deciding
 /// whether or not there is a subtype relationship between the two types
 /// that are reified by the receiver and the operand of that operator.
 ///
-/// 
+/// It also supports type tests and type casts, similar to `e is T` and
+/// `e as T`, where `T` is the type reified by the given [Typer] (which
+/// is not necessarily a type which can be denoted at compile time, so
+/// we can't just write `e is T` or `e as T` for any `T` in order to get
+/// the same behavior).
 ///
+/// A [Typer] also supports a limited form of existential open, using
+/// the method [callWith].
+///
+/// Finally, a [Typer] supports promotion to the type reified by said
+/// [Typer].
 class Typer<X> {
   const Typer();
 
@@ -33,7 +41,7 @@ class Typer<X> {
 
   /// Invoke the given [callback] with [X] as the type argument.
   ///
-  /// This 
+  /// This
   R callWith<R>(R Function<Y>() callback) => callback<X>();
 
   /// Perform a type cast to [X] on the argument [o].
@@ -67,8 +75,6 @@ extension UseTyperExtension<X> on X {
 }
 
 /// Support promotion to the type reified by [this].
-///
-/// 
 extension TyperExtension<X> on Typer<X> {
   /// Promote [toPromote] to the type reified by [this], or return null.
   ///
