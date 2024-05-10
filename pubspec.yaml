@@ -1,6 +1,9 @@
 name: typer
-description: Typer, a more capable version of Type
-version: 1.0.3
+description: >-
+  Provide `Typer`, a more capable version of `Type`.
+  Supports relational operators, type tests and casts,
+  a limited form of existential open, and promotion.
+version: 1.0.4
 repository: https://github.com/eernstg/typer
 
 environment:

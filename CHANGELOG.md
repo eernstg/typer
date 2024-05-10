@@ -1,3 +1,7 @@
+## 1.0.4
+
+- Add documentation.
+
 ## 1.0.3
 
 - Improve README.md.
