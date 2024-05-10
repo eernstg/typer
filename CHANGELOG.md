@@ -1,3 +1,7 @@
+## 1.0.9
+
+- Add missing documentation.
+
 ## 1.0.8
 
 - Improve README.md

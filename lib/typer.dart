@@ -22,8 +22,8 @@
 /// A [Typer] also supports a limited form of existential open, using
 /// the method [callWith].
 ///
-/// Finally, a [Typer] supports promotion to the type reified by said
-/// [Typer].
+/// Finally, a [Typer<T>] supports promotion to the type `T` which is
+/// reified by said typer.
 class Typer<X> {
   const Typer();
 
@@ -41,7 +41,26 @@ class Typer<X> {
 
   /// Invoke the given [callback] with [X] as the type argument.
   ///
-  /// This
+  /// The creation of a `Type<T>` for a given type `T` is similar to the
+  /// creation of a `Type` that reifies `T`. However, with a `Type` object
+  /// there is no way to recover `T` as a type. This means that we are
+  /// unable to call a generic function and pass `T` or a type that
+  /// contains `T` as an actual type argument, we are unable to create a
+  /// new object where `T` is used in the expression that creates the new
+  /// object, etc. Hence, if we have a `Type` object then we basically
+  /// can't recover the underlying type.
+  ///
+  /// In contrast, if we have a `Typer<T>` object, even if its static type
+  /// is a general type like `Typer<Object?>`, then we can use the reified
+  /// type `T` as a type. This is the purpose of [callWith]. Example:
+  ///
+  /// ```dart
+  /// void main() {
+  ///   Typer<num> typer = Typer<int>();
+  ///   // Create a `Map` whose `V` is the type reified by `typer`.
+  ///   var map = typer.callWith(<X>() => <String, X>{});
+  /// }
+  /// ```
   R callWith<R>(R Function<Y>() callback) => callback<X>();
 
   /// Perform a type cast to [X] on the argument [o].
@@ -89,6 +108,16 @@ extension UseTyperExtension<X> on X {
 }
 
 /// Support promotion to the type reified by [this].
+///
+/// Note that it is important that these methods are not declared in the
+/// body of `Typer`. The reason for this is that they must use the
+/// statically known type argument (captured by `X` in this extension),
+/// not the actual run-time value of the type argument. The reason why we
+/// need to use the statically known type is that this is type safe. In
+/// contrast, if we were to use the run-time value of the type argument
+/// then there would be a potential run-time type error for every
+/// invocation of `promoteOrNull` as well as every invocation of
+/// `promote`.
 extension TyperExtension<X> on Typer<X> {
   /// Promote [toPromote] to the type reified by [this], or return null.
   ///
