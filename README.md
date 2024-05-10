@@ -172,20 +172,23 @@ void main() {
   num n = Random().nextBool() ? 2 : 2.5;
 
   print('Promoting:');
-  List<num>? xs = typer.promoteOrNull(n, <X extends num>(X promotedN) {
+  List<num>? xs = typer.promoteOrNull(n, <X extends num>(X promoted) {
     print('  The promotion to `typer` succeeded!');
-    return <X>[promotedN];
+    return <X>[promoted];
   });
   print('Type of `xs`: ${xs.runtimeType}'); // `List<int>` or `Null`.
 
   print('Promoting with `orElse` fallback:');
-  int c = typer.promote(n, <X extends num>(X promotedN) {
-      print('  The promotion to `typeChild` succeeded!');
-      return promotedN as int;
+  Object o = n; // Promote from a rather general type.
+  num n2 = typer.promote(o, <X extends num>(X promoted) {
+      print('  The promotion to `typer` succeeded!');
+      // `typer` has static type `Typer<num>`, so we can use `num` members.
+      promoted.floor();
+      return promoted;
     },
     orElse: () => 14,
   );
-  print('c: $c'); // '2' or '14'.
+  print('n2: $n2'); // '2' or '14'.
 }
 ```
 
@@ -199,17 +202,18 @@ based on the type `T` rather than on a type which can be denoted locally.
 
 However, we can pass a generic callback which will receive the underlying
 type `T` of the `Typer<T>` as its actual argument, and it will also
-receive the object which is being type tested (`promotedN` in the example).
+receive the object which is being type tested (`promoted` in the example).
 
 In the body of that callback we can then use the promoted value, and it is
 statically known that it has a type which is a subtype of that type
-argument (in the example: we know that `promotedN is X`).
+argument (in the example: we know that the actual argument has type `X`).
+Note that `X` is bounded by the statically known type argument of `typer`,
+which means that we can use the interface of `num` on the promoted object.
 
-In the case where `promoteOrNull` or `promote` is used to return a value,
-we may need to perform a type cast on returned values (like `return
-promotedN as int`). The reason for this is that it is not known to the
-static analysis that `X` is exactly the underlying type of `typer`. It is
-true, but we have to insist on it because the type checker can't see it.
+Note, though, that we are actually promoting the promoted object to the
+type reified by `typer` (which is `int`), not just to the statically known
+bound (which is `num`). So when the value of `n` is `2.5`, we use the
+value from `orElse()`, and do not run the `callback`.
 
 ### Example design
 
