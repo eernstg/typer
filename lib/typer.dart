@@ -62,7 +62,7 @@ class Typer<X> {
     return this <= other && other <= this;
   }
 
-  static int _typerHashCode = Typer<Object?>.hashCode;
+  static final int _typerHashCode = (Typer<Object?>).hashCode;
 
   @override
   int get hashCode => X.hashCode ^ _typerHashCode;
