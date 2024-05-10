@@ -172,14 +172,14 @@ void main() {
   num n = Random().nextBool() ? 2 : 2.5;
 
   print('Promoting:');
-  List<num>? xs = typer.promoting(n, <X extends num>(X promotedN) {
+  List<num>? xs = typer.promoteOrNull(n, <X extends num>(X promotedN) {
     print('  The promotion to `typer` succeeded!');
     return <X>[promotedN];
   });
   print('Type of `xs`: ${xs.runtimeType}'); // `List<int>` or `Null`.
 
   print('Promoting with `orElse` fallback:');
-  int c = typer.promotingOrElse(n, <X extends num>(X promotedN) {
+  int c = typer.promote(n, <X extends num>(X promotedN) {
       print('  The promotion to `typeChild` succeeded!');
       return promotedN as int;
     },
@@ -205,11 +205,11 @@ In the body of that callback we can then use the promoted value, and it is
 statically known that it has a type which is a subtype of that type
 argument (in the example: we know that `promotedN is X`).
 
-In the case where `promoting` is used to return a value, we may need to
-perform a type cast on returned values (like `return promotedN as
-int`). The reason for this is that it is not known to the static analysis
-that `X` is exactly the underlying type of `typer`. It is true, but we
-have to insist on it because the type checker can't see it.
+In the case where `promoteOrNull` or `promote` is used to return a value,
+we may need to perform a type cast on returned values (like `return
+promotedN as int`). The reason for this is that it is not known to the
+static analysis that `X` is exactly the underlying type of `typer`. It is
+true, but we have to insist on it because the type checker can't see it.
 
 ### Example design
 
