@@ -66,6 +66,9 @@ class Typer<X> {
 
   @override
   int get hashCode => X.hashCode ^ _typerHashCode;
+
+  @override
+  String toString() => 'Typer<$X>';
 }
 
 /// Provide familiar access to some members of `Typer`.
