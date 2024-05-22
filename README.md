@@ -2,7 +2,7 @@
 
 Provide `Typer<X>`, a user-written, but more capable version of `Type`.
 
-## The built-in `Type` class
+# The built-in `Type` class
 
 The language Dart has built-in support for obtaining a reified
 representation of a given type `T` by evaluating the corresponding type
@@ -39,13 +39,13 @@ void main() {
 }
 ```
 
-## Typer
+# Typer
 
 For all other things than getting the run-time type of an existing object,
 we can use an instance of `Typer<T>` for any type `T` that we can denote,
 and this will do more than a `Type` can do.
 
-### Comparing types
+## Comparing types
 
 In particular, `Typer` has support for the relational operators
 `<`, `<=`, `>`, and `>=`. They will determine whether one `Typer`
@@ -60,7 +60,7 @@ void main() {
 }
 ```
 
-### Type tests and type casts
+## Type tests and type casts
 
 If `typer` is a `Typer<T>` then we can test whether a given
 object `o` is an instance of `T` using `o.isA(typer)`, and perform a
@@ -111,7 +111,7 @@ void main() {
 }
 ```
 
-### Using the type that a `Typer` represents
+## Using the type that a `Typer` represents
 
 We can use the method `callWith` to get access to the underlying type in a
 statically safe manner (this is essentially an "existential open"
@@ -215,7 +215,7 @@ type reified by `typer` (which is `int`), not just to the statically known
 bound (which is `num`). So when the value of `n` is `2.5`, we use the
 value from `orElse()`, and do not run the `callback`.
 
-### Example design
+## Example design
 
 Here is an example of a design which can be used to enable techniques that
 are similar to an existential open operation, in a rather general

@@ -1,10 +1,14 @@
+## 1.0.10
+
+- Improve formatting of README.md.
+
 ## 1.0.9
 
 - Add missing documentation.
 
 ## 1.0.8
 
-- Improve README.md
+- Improve README.md.
 
 ## 1.0.7
 
